@@ -6,7 +6,7 @@ import android.opengl.GLES20;
 import javax.microedition.khronos.opengles.GL;
 
 /**
- * Created by chenxin11 on 2017/1/11.
+ * Created by xinchen on 2017/1/11.
  */
 
 public class ShaderHelper {

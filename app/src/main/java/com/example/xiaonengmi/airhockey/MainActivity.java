@@ -1,4 +1,4 @@
-package com.example.xinchen.airhockey;
+package com.example.xiaonengmi.airhockey;
 
 import android.app.ActivityManager;
 import android.content.Context;

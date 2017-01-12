@@ -3,7 +3,7 @@ package com.airhockey.android.util;
 import android.util.Log;
 
 /**
- * Created by chenxin11 on 2017/1/11.
+ * Created by xinchen on 2017/1/11.
  */
 
 public class LoggerHelper {

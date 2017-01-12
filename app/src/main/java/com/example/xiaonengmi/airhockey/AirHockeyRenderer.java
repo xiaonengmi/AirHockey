@@ -1,7 +1,6 @@
-package com.example.xinchen.airhockey;
+package com.example.xiaonengmi.airhockey;
 
 import android.content.Context;
-import android.opengl.GLES10;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
@@ -17,7 +16,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 /**
- * Created by chenxin11 on 2017/1/9.
+ * Created by xinchen on 2017/1/9.
  */
 
 public class AirHockeyRenderer implements GLSurfaceView.Renderer {

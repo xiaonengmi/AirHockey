@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * Created by chenxin11 on 2017/1/11.
+ * Created by xinchen on 2017/1/11.
  */
 
 public class TextResourceReader
