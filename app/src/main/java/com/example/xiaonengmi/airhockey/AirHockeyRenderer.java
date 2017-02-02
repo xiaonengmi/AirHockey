@@ -6,6 +6,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.airhockey.android.util.LoggerHelper;
+import com.airhockey.android.util.MatrixHelper;
 import com.airhockey.android.util.ShaderHelper;
 import com.airhockey.android.util.TextResourceReader;
 
@@ -24,6 +25,7 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer {
 
     private static final int BYTES_PER_FLOAT = 4;
     private static final int POSITION_COMPONENT_COUNT = 2;
+//    private static final int POSITION_COMPONENT_COUNT = 4;
     private static final int COLOR_COMPONENT_COUNT = 3;
     private static final int STRIDE = (POSITION_COMPONENT_COUNT + COLOR_COMPONENT_COUNT) * BYTES_PER_FLOAT;
 
@@ -37,6 +39,8 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer {
     private int uMatrixLocation;
     private final float[] projectionMatrix = new float[16];
 
+    private final float[] modelMatrix = new float[16];
+
     private Context context;
 
     private FloatBuffer vertexData;
@@ -48,20 +52,39 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer {
 
         float[] tableVertices = {
                 // triangle fan
-                0f, 0f, 1f, 1f, 1f,
-                -0.5f, -0.8f, 0.7f, 0.7f, 0.7f,
-                0.5f, -0.8f, 0.7f, 0.7f, 0.7f,
-                0.5f, 0.8f, 0.7f, 0.7f, 0.7f,
-                -0.5f, 0.8f, 0.7f, 0.7f, 0.7f,
-                -0.5f, -0.8f, 0.7f, 0.7f, 0.7f,
+                0f,     0f,            1f, 1f, 1f,
+                -0.5f,  -0.8f,         0.7f, 0.7f, 0.7f,
+                0.5f,   -0.8f,         0.7f, 0.7f, 0.7f,
+                0.5f,   0.8f,          0.7f, 0.7f, 0.7f,
+                -0.5f,  0.8f,          0.7f, 0.7f, 0.7f,
+                -0.5f,  -0.8f,         0.7f, 0.7f, 0.7f,
 
                 // line1
-                -0.5f, 0f, 1f, 0f, 0f,
-                0.5f, 0f, 1f, 0f, 0f,
+                -0.5f,  0f,            1f, 0f, 0f,
+                0.5f,   0f,            1f, 0f, 0f,
                 // mallets
-                0f, -0.4f, 0f, 0f, 1f,
-                0f, 0.4f, 1f, 0f, 0f
+                0f,     -0.4f,         0f, 0f, 1f,
+                0f,     0.4f,          1f, 0f, 0f
         };
+
+//        float[] tableVertices = {
+//                // order of coordinates: x, y, z, w, r, g, b
+//
+//                // triangle fan
+//                0f,     0f,     0f,     1.5f,       1f, 1f, 1f,
+//                -0.5f,  -0.8f,  0f,     1f,         0.7f, 0.7f, 0.7f,
+//                0.5f,   -0.8f,  0f,     1f,         0.7f, 0.7f, 0.7f,
+//                0.5f,   0.8f,   0f,     2f,         0.7f, 0.7f, 0.7f,
+//                -0.5f,  0.8f,   0f,     2f,         0.7f, 0.7f, 0.7f,
+//                -0.5f,  -0.8f,  0f,     1f,         0.7f, 0.7f, 0.7f,
+//
+//                // line1
+//                -0.5f,  0f,     0f,     1.5f,       1f, 0f, 0f,
+//                0.5f,   0f,     0f,     1.5f,       1f, 0f, 0f,
+//                // mallets
+//                0f,     -0.4f,  0f,     1.25f,      0f, 0f, 1f,
+//                0f,     0.4f,   0f,     1.75f,      1f, 0f, 0f
+//        };
 
         vertexData = ByteBuffer.allocateDirect(tableVertices.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer();
         vertexData.put(tableVertices);
@@ -100,11 +123,23 @@ public class AirHockeyRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl10, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
 
-        final float ratio = width > height ? (float) width / (float) height : (float) height / (float) width;
-        if (width > height)
-            Matrix.orthoM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, -1f, 1f);
-        else
-            Matrix.orthoM(projectionMatrix, 0, -1f, 1f, -ratio, ratio, -1f, 1f);
+//        // orthographic projection
+//        final float ratio = width > height ? (float) width / (float) height : (float) height / (float) width;
+//        if (width > height)
+//            Matrix.orthoM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, -1f, 1f);
+//        else
+//            Matrix.orthoM(projectionMatrix, 0, -1f, 1f, -ratio, ratio, -1f, 1f);
+
+        // perspective projection
+        MatrixHelper.perspectiveM(projectionMatrix, 45, (float)width / (float)height, 1f, 10f);
+
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 0f, 0f, -2.5f);
+        Matrix.rotateM(modelMatrix, 0, -60f, 1f, 0f, 0f);
+
+        final float[] temp = new float[16];
+        Matrix.multiplyMM(temp, 0, projectionMatrix, 0, modelMatrix, 0);
+        System.arraycopy(temp, 0, projectionMatrix, 0, temp.length);
     }
 
     @Override
